@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MS Paint Clone</title>
+  <style>
+    body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#colorPicker, #brushSize {
+  margin-right: 10px;
+}
+
+#paintCanvas {
+  border: 2px solid black;
+  background-color: white;
+  cursor: crosshair;
+}
+
+button {
+  padding: 5px 10px;
+  font-size: 16px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <input type="color" id="colorPicker" value="#000000">
+    <input type="range" id="brushSize" min="1" max="50" value="5">
+    <button id="clearBtn">Clear</button>
+  </div>
+  <canvas id="paintCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("paintCanvas");
+        const ctx = canvas.getContext("2d");
+
+
+        canvas.width = window.innerWidth * 0.8;
+        canvas.height = window.innerHeight * 0.8;
+
+
+        let painting = false;
+        let brushColor = "#000000";
+        let brushSize = 5;
+
+
+        const colorPicker = document.getElementById("colorPicker");
+        const brushSizeInput = document.getElementById("brushSize");
+        const clearBtn = document.getElementById("clearBtn");
+
+
+        canvas.addEventListener("mousedown", startPainting);
+        canvas.addEventListener("mouseup", stopPainting);
+        canvas.addEventListener("mousemove", draw);
+
+        colorPicker.addEventListener("change", (e) => {
+             brushColor = e.target.value;
+        });
+
+        brushSizeInput.addEventListener("change", (e) => {
+           brushSize = e.target.value;
+        });
+
+        clearBtn.addEventListener("click", clearCanvas);
+
+
+        function startPainting(e) {
+           painting = true;
+           draw(e); 
+        }
+
+        function stopPainting() {
+          painting = false;
+          ctx.beginPath(); 
+        }
+
+        function draw(e) {
+            if (!painting) return;
+
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = brushColor;
+
+            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+    </script>
+</body>
+</html>
